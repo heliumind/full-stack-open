@@ -1,7 +1,7 @@
 const Person = ({ person }) => (
-  <p>
+  <li>
     {person.name} {person.number}
-  </p>
+  </li>
 )
 
 export default Person
