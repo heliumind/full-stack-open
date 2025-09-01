@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
@@ -9,8 +9,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data)
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons)
     })
   }, [])
 
@@ -25,8 +25,19 @@ const App = () => {
       number: newNumber,
     }
 
-    setPersons(persons.concat(newPerson))
-    setNewName('')
+    personService.create(newPerson).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson))
+      setNewName('')
+    })
+  }
+
+  const deleteHandler = (id) => () => {
+    const person = persons.find((p) => p.id === id)
+    if (confirm(`Delete ${person.name}?`)) {
+      personService.deleteId(id).then((deletedPerson) => {
+        setPersons(persons.filter((p) => p.id !== deletedPerson.id))
+      })
+    }
   }
 
   const handleChange = (setFunc) => (event) => setFunc(event.target.value)
@@ -44,7 +55,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={persons} />
+      <Persons persons={persons} deleteHandler={deleteHandler} />
     </div>
   )
 }
