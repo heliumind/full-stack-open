@@ -1,5 +1,8 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+app.use(express.json())
+app.use(morgan('dev'))
 
 let persons = [
   {
@@ -29,8 +32,6 @@ const generateId = () => {
     persons.length > 0 ? Math.max(...persons.map((p) => Number(p.id))) : 0
   return String(maxId + 1)
 }
-
-app.use(express.json())
 
 app.get('/info', (req, res) => {
   res.send(

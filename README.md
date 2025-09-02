@@ -51,7 +51,7 @@ My solutions for the exercises of the [University of Helsinki](https://www.helsi
 | [0](./part_0/) |    Done     |    6/6    |
 | [1](./part_1/) |    Done     |   10/14   |
 | [2](./part_2/) |    Done     |   13/20   |
-| [3](./part_3/) | In Progress |   0/22    |
+| [3](./part_3/) | In Progress |   7/22    |
 | [4](./part_4/) |             |   0/23    |
 | [5](./part_5/) |             |   0/23    |
 | [6](./part_6/) |             |   0/24    |
