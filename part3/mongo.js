@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 const savePerson = (person) => {
-  person.save().then((result) => {
+  person.save().then(() => {
     console.log(`added ${person.name} numer ${person.number} to phonebook`)
     mongoose.connection.close()
   })
@@ -38,16 +38,19 @@ const getAll = () => {
 }
 
 switch (process.argv.length) {
-  case 3:
+  case 3: {
     getAll()
     break
-  case 5:
+  }
+  case 5: {
     const person = new Person({
       name: process.argv[3],
       number: process.argv[4],
     })
     savePerson(person)
     break
-  default:
+  }
+  default: {
     console.log('incorrect usage')
+  }
 }
