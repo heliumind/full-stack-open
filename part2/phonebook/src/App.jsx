@@ -30,6 +30,7 @@ const App = () => {
     personService.create(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson))
       setNewName('')
+      setNewNumber('')
       setInfoMessage(`Added ${returnedPerson.name}`)
       setTimeout(() => setInfoMessage(null), 5000)
     })
