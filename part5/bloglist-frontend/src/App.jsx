@@ -73,7 +73,7 @@ const App = () => {
 
   const deleteBlog = async (blogId) => {
     await blogService.deleteBlog(blogId)
-    setBlogs(blogs.filter((blog) => blog.id != blogId))
+    setBlogs(blogs.filter((blog) => blog.id !== blogId))
   }
 
   const loginForm = () => (
