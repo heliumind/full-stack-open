@@ -188,7 +188,7 @@ describe('when there is initially some blogs saved', () => {
   })
 
   describe('deletion of a blog', () => {
-    test.only('from authorized user succeeds with status code 204 if id is valid', async () => {
+    test('from authorized user succeeds with status code 204 if id is valid', async () => {
       const loginUser = await api.post('/api/login').send(validUser)
       const response = await api
         .post('/api/blogs')
