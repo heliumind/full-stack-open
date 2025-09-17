@@ -38,12 +38,14 @@ const Blog = ({ blog, addLikes, deleteBlog, user }) => {
         </div>
       )}
       {visible && (
-        <div style={blogStyle}>
-          {blog.title} {blog.author}
+        <div style={blogStyle} data-testid="blog card">
+          <span>
+            {blog.title} {blog.author}
+          </span>
           <button onClick={toggleVisibility}>hide</button>
           <p>{blog.url}</p>
           <p>
-            {blog.likes}
+            <span>{blog.likes}</span>
             <button onClick={handleLike}>like</button>
           </p>
           <p>{blog.user !== null && blog.user.name}</p>
