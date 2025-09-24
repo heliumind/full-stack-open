@@ -54,8 +54,8 @@ My solutions for the exercises of the [University of Helsinki](https://www.helsi
 | [3](./part_3/) |    Done     |   21/22   |
 | [4](./part_4/) |    Done     |   21/23   |
 | [5](./part_5/) |    Done     |   23/23   |
-| [6](./part_6/) | In Progress |   0/24    |
-| [7](./part_7/) |             |   0/21    |
+| [6](./part_6/) |    Done     |   24/24   |
+| [7](./part_7/) | In Progress |   0/21    |
 | [8](./part_8/) |             |   0/26    |
 | [9](./part_9/) |             |   0/29    |
 
