@@ -1,45 +1,46 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setNotification } from './reducers/notificationReducer'
+import { Routes, Route } from 'react-router-dom'
 import { initializeBlogs } from './reducers/blogReducer'
-import { initializeUser, logoutUser } from './reducers/authReducer'
+import { initializeUsers } from './reducers/userReducer'
+import { initializeUser } from './reducers/authReducer'
+import Menu from './components/Menu'
 import Notification from './components/Notifications'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import UserList from './components/UserList'
+import User from './components/User'
+
+const Home = () => (
+  <div>
+    <BlogForm />
+    <BlogList />
+  </div>
+)
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const user = useSelector((state) => state.authUser)
-
+  const authUser = useSelector((state) => state.authUser)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(initializeBlogs())
     dispatch(initializeUser())
+    dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
-
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
 
   return (
     <div>
-      {!user && <LoginForm />}
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          <Notification />
-          <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </p>
-          <BlogForm />
-          <BlogList user={user} />
-        </div>
-      )}
+      {authUser && <Menu />}
+      <Notification />
+      {authUser && <h2>blog app</h2>}
+      <Routes>
+        <Route path="/" element={authUser ? <Home /> : <LoginForm />} />
+        <Route path="/blogs/:id" element={<Blog />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/users/:id" element={<User />} />
+      </Routes>
     </div>
   )
 }
