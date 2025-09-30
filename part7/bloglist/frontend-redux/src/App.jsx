@@ -31,10 +31,9 @@ const App = () => {
   }, [])
 
   return (
-    <div>
+    <div className="container">
       {authUser && <Menu />}
       <Notification />
-      {authUser && <h2>blog app</h2>}
       <Routes>
         <Route path="/" element={authUser ? <Home /> : <LoginForm />} />
         <Route path="/blogs/:id" element={<Blog />} />

@@ -35,7 +35,7 @@ export const loginUser = ({ username, password }) => {
       blogService.setToken(user.token)
       dispatch(setUser(user))
     } catch {
-      dispatch(setNotification('wrong username or password', 'error', 5))
+      dispatch(setNotification('wrong username or password', 'danger', 5))
     }
   }
 }
