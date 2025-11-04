@@ -1,6 +1,6 @@
-const Authors = () => {
-  const authors = []
+import EditAuthor from './EditAuthor'
 
+const Authors = ({ authors }) => {
   return (
     <div>
       <h2>authors</h2>
@@ -20,6 +20,9 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
+      <EditAuthor
+        options={authors.map((a) => ({ value: a.name, label: a.name }))}
+      />
     </div>
   )
 }
