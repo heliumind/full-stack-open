@@ -1,6 +1,6 @@
 import EditAuthor from './EditAuthor'
 
-const Authors = ({ authors }) => {
+const Authors = ({ authors, setError }) => {
   return (
     <div>
       <h2>authors</h2>
@@ -22,6 +22,7 @@ const Authors = ({ authors }) => {
       </table>
       <EditAuthor
         options={authors.map((a) => ({ value: a.name, label: a.name }))}
+        setError={setError}
       />
     </div>
   )

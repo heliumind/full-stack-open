@@ -91,7 +91,7 @@ const resolvers = {
     },
     allAuthors: async () => Author.find({}),
     me: (root, args, context) => {
-      return context.currenUser
+      return context.currentUser
     },
   },
 

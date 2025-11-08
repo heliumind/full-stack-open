@@ -1,45 +1,103 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import { gql, useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import Notify from './components/Notify'
+import LoginForm from './components/LoginForm'
+import { useApolloClient, useQuery } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, USER } from './queries'
+import Recommend from './components/Recommend'
 
 const App = () => {
   const padding = {
     padding: 5,
   }
 
+  useEffect(() => {
+    const userToken = localStorage.getItem('library-user-token')
+    if (userToken) {
+      setToken(userToken)
+    }
+  }, [])
+
+  const [token, setToken] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const authors = useQuery(ALL_AUTHORS)
   const books = useQuery(ALL_BOOKS)
+  const user = useQuery(USER)
+  const client = useApolloClient()
+
+  const notify = (message) => {
+    setErrorMessage(message)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 10000)
+  }
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
+  }
 
   if (authors.loading || books.loading) {
     return <div>loading...</div>
   }
 
   return (
-    <Router>
-      <div>
-        <Link style={padding} to="/">
-          authors
-        </Link>
-        <Link style={padding} to="/books">
-          books
-        </Link>
-        <Link style={padding} to="/add">
-          add book
-        </Link>
-      </div>
-
-      <Routes>
-        <Route path="/books" element={<Books books={books.data.allBooks} />} />
-        <Route path="/add" element={<NewBook />} />
-        <Route
-          path="/"
-          element={<Authors authors={authors.data.allAuthors} />}
-        />
-      </Routes>
-    </Router>
+    <div>
+      <Notify errorMessage={errorMessage} />
+      <Router>
+        <div>
+          <Link style={padding} to="/">
+            authors
+          </Link>
+          <Link style={padding} to="/books">
+            books
+          </Link>
+          {token && (
+            <Link style={padding} to="/add">
+              add book
+            </Link>
+          )}
+          {token && (
+            <Link style={padding} to="/recommend">
+              recommend
+            </Link>
+          )}
+          {!token && (
+            <Link style={padding} to="/login">
+              login
+            </Link>
+          )}
+          {token && <button onClick={logout}>logout</button>}
+        </div>
+        <Routes>
+          <Route
+            path="/login"
+            element={<LoginForm setError={notify} setToken={setToken} />}
+          />
+          <Route
+            path="/recommend"
+            element={
+              <Recommend user={user.data.me} books={books.data.allBooks} />
+            }
+          />
+          <Route
+            path="/books"
+            element={<Books books={books.data.allBooks} />}
+          />
+          <Route path="/add" element={<NewBook setError={notify} />} />
+          <Route
+            path="/"
+            element={
+              <Authors authors={authors.data.allAuthors} setError={notify} />
+            }
+          />
+        </Routes>
+      </Router>
+    </div>
   )
 }
 

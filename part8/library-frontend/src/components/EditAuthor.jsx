@@ -1,13 +1,13 @@
 import { useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { EDIT_AUTHOR } from '../queries'
 import Select from 'react-select'
 
-const EditAuthor = ({ options }) => {
+const EditAuthor = ({ options, setError }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
-  const [changeAuthor] = useMutation(EDIT_AUTHOR)
+  const [changeAuthor, result] = useMutation(EDIT_AUTHOR)
 
   const submit = (event) => {
     event.preventDefault()
@@ -16,6 +16,12 @@ const EditAuthor = ({ options }) => {
     setName('')
     setBorn('')
   }
+
+  useEffect(() => {
+    if (result.data && result.data.editAuthor === null) {
+      setError('author not found')
+    }
+  }, [result.data])
 
   return (
     <div>
