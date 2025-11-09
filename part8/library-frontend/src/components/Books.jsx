@@ -11,7 +11,7 @@ const Books = ({ books }) => {
   }
 
   const genres = [...new Set(books.map((b) => b.genres).flat())]
-  const filteredBooks = bookFilter.data.allBooks
+  const filteredBooks = filter === '' ? books : bookFilter.data.allBooks
 
   return (
     <div>

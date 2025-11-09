@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
-import { useApolloClient, useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS, USER } from './queries'
 import Recommend from './components/Recommend'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, USER } from './queries'
+import { updateCache } from './utils'
 
 const App = () => {
   const padding = {
@@ -41,7 +42,16 @@ const App = () => {
     client.resetStore()
   }
 
-  if (authors.loading || books.loading) {
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      console.log(data)
+      const addedBook = data.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    },
+  })
+
+  if (authors.loading || books.loading || user.loading) {
     return <div>loading...</div>
   }
 
@@ -80,9 +90,7 @@ const App = () => {
           />
           <Route
             path="/recommend"
-            element={
-              <Recommend user={user.data.me} books={books.data.allBooks} />
-            }
+            element={<Recommend user={user.data.me} />}
           />
           <Route
             path="/books"

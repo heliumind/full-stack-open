@@ -1,6 +1,17 @@
-const Recommend = ({ user, books }) => {
-  const favoriteGenre = user ? user.favoriteGenre : null
-  const filteredBooks = books.filter((b) => b.genres.includes(favoriteGenre))
+import { useQuery } from '@apollo/client'
+import { ALL_BOOKS } from '../queries'
+
+const Recommend = ({ user }) => {
+  const favoriteGenre = user?.favoriteGenre ?? null
+  const bookFilter = useQuery(ALL_BOOKS, {
+    variables: { genre: favoriteGenre },
+  })
+
+  if (bookFilter.loading) {
+    return <div>loading...</div>
+  }
+
+  const filteredBooks = bookFilter.data.allBooks
 
   return (
     <div>
