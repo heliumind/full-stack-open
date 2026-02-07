@@ -23,10 +23,10 @@ const getRatingDesc = (rating: number): string => {
 const calculateExercise = (hours: number[], target: number): Result => {
   const periodLength = hours.length;
   const trainingDays = hours.filter((h) => h !== 0).length;
-  const average = hours.reduce((acc, h) => acc + h) / hours.length;
+  const average = hours.reduce((acc, h) => acc + h, 0) / hours.length;
   const success = average >= target;
   const rating = Math.floor(
-    Math.min(3, Math.max(1, 1 + 2 * (average / target)))
+    Math.min(3, Math.max(1, 1 + 2 * (average / target))),
   );
   const ratingDescription = getRatingDesc(rating);
 
