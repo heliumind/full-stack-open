@@ -20,7 +20,7 @@ const getRatingDesc = (rating: number): string => {
   }
 };
 
-const calculateExercise = (hours: number[], target: number): Result => {
+export const calculateExercise = (hours: number[], target: number): Result => {
   const periodLength = hours.length;
   const trainingDays = hours.filter((h) => h !== 0).length;
   const average = hours.reduce((acc, h) => acc + h, 0) / hours.length;
@@ -42,8 +42,10 @@ const calculateExercise = (hours: number[], target: number): Result => {
 };
 
 try {
-  const { target, hours } = parseExArguments(process.argv);
-  console.log(calculateExercise(hours, target));
+  if (require.main === module) {
+    const { target, hours } = parseExArguments(process.argv);
+    console.log(calculateExercise(hours, target));
+  }
 } catch (error: unknown) {
   let errorMessage = 'Somehting bad happened.';
   if (error instanceof Error) {
