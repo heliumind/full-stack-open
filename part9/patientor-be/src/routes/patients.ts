@@ -1,8 +1,7 @@
-import express from 'express';
-import { Response } from 'express';
-import { PatientNonPII } from '../types';
+import express, { Response, Request } from 'express';
+import { NewPatient, Patient, PatientNonPII } from '../types';
 import patientService from '../services/patientService';
-import { toNewPatient } from '../utils';
+import { errorMiddleware, newPatientParser } from '../middleware/patients';
 
 const router = express.Router();
 
@@ -10,18 +9,15 @@ router.get('/', (_req, res: Response<PatientNonPII[]>) => {
   res.json(patientService.getPatiensNonPII());
 });
 
-router.post('/', (req, res) => {
-  try {
-    const patient = toNewPatient(req.body);
-    const newPatient = patientService.addPatient(patient);
+router.post(
+  '/',
+  newPatientParser,
+  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+    const newPatient = patientService.addPatient(req.body);
     res.json(newPatient);
-  } catch (error: unknown) {
-    let errorMessage = 'Something went wrong :(';
-    if (error instanceof Error) {
-      errorMessage = 'Error: ' + error.message;
-    }
-    res.status(400).send(errorMessage);
-  }
-});
+  },
+);
+
+router.use(errorMiddleware);
 
 export default router;
