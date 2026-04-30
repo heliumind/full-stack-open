@@ -1,10 +1,10 @@
-import type { Diary } from '../types';
+import type { Diary as DiaryEntry } from '../types';
 
 type DiaryProps = {
-  diary: Diary;
+  diary: DiaryEntry;
 };
 
-const Diary = ({ diary }: DiaryProps) => (
+export const Diary = ({ diary }: DiaryProps) => (
   <div>
     <h3>{diary.date}</h3>
     <p>
