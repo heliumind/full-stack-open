@@ -3,12 +3,14 @@ import type { Diary, NewDiary } from './types';
 
 const baseUrl = 'http://localhost:3000/api/diaries';
 
-const getAll = () => {
-  return axios.get<Diary[]>(baseUrl).then((response) => response.data);
+const getAll = async () => {
+  const { data } = await axios.get<Diary[]>(baseUrl);
+  return data;
 };
 
-const create = (object: NewDiary) => {
-  return axios.post<Diary>(baseUrl, object).then((response) => response.data);
+const create = async (object: NewDiary) => {
+  const { data } = await axios.post<Diary>(baseUrl, object);
+  return data;
 };
 
 export default { getAll, create };

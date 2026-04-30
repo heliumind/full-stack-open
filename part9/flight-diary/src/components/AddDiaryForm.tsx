@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { NewDiary } from '../types';
 
-type Props = { onSubmit: (newDiary: NewDiary) => void };
+type Props = { error: string; onSubmit: (newDiary: NewDiary) => void };
 
-const AddNewDiary = ({ onSubmit }: Props) => {
+const AddDiaryForm = ({ error, onSubmit }: Props) => {
   const [date, setDate] = useState('');
   const [weather, setWeather] = useState('');
   const [visibility, setVisibility] = useState('');
@@ -22,6 +22,7 @@ const AddNewDiary = ({ onSubmit }: Props) => {
   return (
     <div>
       <h2>Add new entry</h2>
+      <div style={{ color: 'red' }}>{error}</div>
       <form onSubmit={addDiary}>
         <div>
           date
@@ -57,4 +58,4 @@ const AddNewDiary = ({ onSubmit }: Props) => {
   );
 };
 
-export default AddNewDiary;
+export default AddDiaryForm;
