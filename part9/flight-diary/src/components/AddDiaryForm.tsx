@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { NewDiary } from '../types';
+import { type NewDiary, Weather, Visibility } from '../types';
 
 type Props = { error: string; onSubmit: (newDiary: NewDiary) => void };
 
 const AddDiaryForm = ({ error, onSubmit }: Props) => {
   const [date, setDate] = useState('');
-  const [weather, setWeather] = useState('');
-  const [visibility, setVisibility] = useState('');
+  const [weather, setWeather] = useState(Weather.Cloudy);
+  const [visibility, setVisibility] = useState(Visibility.Good);
   const [comment, setComment] = useState('');
 
   const addDiary = (event: React.SyntheticEvent) => {
@@ -27,23 +27,36 @@ const AddDiaryForm = ({ error, onSubmit }: Props) => {
         <div>
           date
           <input
+            type="date"
             value={date}
             onChange={({ target }) => setDate(target.value)}
           />
         </div>
         <div>
-          weather
-          <input
-            value={weather}
-            onChange={({ target }) => setWeather(target.value)}
-          />
+          weather &nbsp;
+          {Object.values(Weather).map((weather) => (
+            <span>
+              <label>{weather.toString()}</label>
+              <input
+                type="radio"
+                name="weather"
+                onChange={() => setWeather(weather)}
+              />
+            </span>
+          ))}
         </div>
         <div>
-          visibility
-          <input
-            value={visibility}
-            onChange={({ target }) => setVisibility(target.value)}
-          />
+          visibility &nbsp;
+          {Object.values(Visibility).map((visibility) => (
+            <span>
+              <label>{visibility.toString()}</label>
+              <input
+                type="radio"
+                name="weather"
+                onChange={() => setVisibility(visibility)}
+              />
+            </span>
+          ))}
         </div>
         <div>
           comment
