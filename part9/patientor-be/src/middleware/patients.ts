@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { NewPatientSchema } from '../utils';
 import { z } from 'zod';
 
@@ -17,7 +17,6 @@ const errorMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log('hi');
   if (error instanceof z.ZodError) {
     res.status(400).send({ error: error.issues });
   } else {

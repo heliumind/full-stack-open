@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { NewPatientSchema } from './utils';
+import type { z } from 'zod';
+import type { NewPatientSchema } from './utils';
 
 export interface Diagnosis {
   code: string;

@@ -1,5 +1,6 @@
-import express, { Response, Request } from 'express';
-import { NewPatient, Patient, PatientNonPII } from '../types';
+import type { Response, Request } from 'express';
+import express from 'express';
+import type { NewPatient, Patient, PatientNonPII } from '../types';
 import patientService from '../services/patientService';
 import { errorMiddleware, newPatientParser } from '../middleware/patients';
 

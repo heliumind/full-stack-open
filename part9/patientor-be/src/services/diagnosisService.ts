@@ -1,5 +1,5 @@
 import diagnosesData from '../../data/diagnoses';
-import { Diagnosis } from '../types';
+import type { Diagnosis } from '../types';
 
 const diagnoses: Diagnosis[] = diagnosesData;
 
