@@ -10,6 +10,15 @@ router.get('/', (_req, res: Response<PatientNonPII[]>) => {
   res.json(patientService.getPatiensNonPII());
 });
 
+router.get('/:id', (req, res: Response<Patient>) => {
+  const patient = patientService.findById(req.params.id);
+  if (patient) {
+    res.send(patient);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 router.post(
   '/',
   newPatientParser,

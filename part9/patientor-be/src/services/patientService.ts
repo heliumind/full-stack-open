@@ -23,9 +23,14 @@ const getPatiensNonPII = (): PatientNonPII[] => {
   }));
 };
 
+const findById = (id: string): Patient | undefined => {
+  return patients.find((p) => p.id === id);
+};
+
 const addPatient = (patient: NewPatient): Patient => {
   const newPatient = {
     id: uuid(),
+    entries: [],
     ...patient,
   };
 
@@ -33,4 +38,4 @@ const addPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
-export default { getPatients, getPatiensNonPII, addPatient };
+export default { getPatients, getPatiensNonPII, findById, addPatient };
