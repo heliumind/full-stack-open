@@ -1,19 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Box,
   Button,
-  MenuItem,
-  Select,
-  InputLabel,
+  Chip,
   FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  type SelectChangeEvent,
   TextField,
   Typography,
 } from '@mui/material';
 import axios from 'axios';
 
 import patientService from '../../services/patients';
-import type { Entry } from '../../types';
+import diagnosisService from '../../services/diagnoses';
+import type { Diagnosis, Entry } from '../../types';
 
 type EntryType = 'HealthCheck' | 'OccupationalHealthcare' | 'Hospital';
 
@@ -28,7 +32,7 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
-  const [diagnosisCodes, setDiagnosisCodes] = useState('');
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [healthCheckRating, setHealthCheckRating] = useState('');
   const [employerName, setEmployerName] = useState('');
   const [sickLeaveStart, setSickLeaveStart] = useState('');
@@ -36,15 +40,18 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
   const [dischargeDate, setDischargeDate] = useState('');
   const [dischargeCriteria, setDischargeCriteria] = useState('');
   const [error, setError] = useState('');
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+
+  useEffect(() => {
+    diagnosisService.getAll().then(setDiagnoses);
+  }, []);
 
   const buildEntry = () => {
     const base = {
       description,
       date,
       specialist,
-      diagnosisCodes: diagnosisCodes
-        ? diagnosisCodes.split(',').map((c) => c.trim())
-        : undefined,
+      diagnosisCodes: diagnosisCodes.length > 0 ? diagnosisCodes : undefined,
     };
 
     switch (entryType) {
@@ -93,18 +100,28 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
     }
   };
 
+  const handleDiagnosisChange = (event: SelectChangeEvent<string[]>) => {
+    const value = event.target.value;
+    setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+  };
+
   const typeSpecificFields = () => {
     switch (entryType) {
       case 'HealthCheck':
         return (
-          <TextField
-            fullWidth
-            label="Healthcheck rating"
-            variant="standard"
-            value={healthCheckRating}
-            onChange={(e) => setHealthCheckRating(e.target.value)}
-            sx={{ pb: 1 }}
-          />
+          <FormControl fullWidth sx={{ pb: 1 }}>
+            <InputLabel variant="standard">Healthcheck rating</InputLabel>
+            <Select
+              variant="standard"
+              value={healthCheckRating}
+              onChange={(e) => setHealthCheckRating(e.target.value)}
+            >
+              <MenuItem value="0">Healthy (0)</MenuItem>
+              <MenuItem value="1">Low Risk (1)</MenuItem>
+              <MenuItem value="2">High Risk (2)</MenuItem>
+              <MenuItem value="3">Critical Risk (3)</MenuItem>
+            </Select>
+          </FormControl>
         );
       case 'OccupationalHealthcare':
         return (
@@ -117,21 +134,26 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
               onChange={(e) => setEmployerName(e.target.value)}
               sx={{ pb: 1 }}
             />
+            <Typography sx={{ pt: 1 }}>Sick leave</Typography>
             <TextField
               fullWidth
-              label="Sick leave start date"
+              label="start"
+              type="date"
               variant="standard"
               value={sickLeaveStart}
               onChange={(e) => setSickLeaveStart(e.target.value)}
               sx={{ pb: 1 }}
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
               fullWidth
-              label="Sick leave end date"
+              label="end"
+              type="date"
               variant="standard"
               value={sickLeaveEnd}
               onChange={(e) => setSickLeaveEnd(e.target.value)}
               sx={{ pb: 1 }}
+              InputLabelProps={{ shrink: true }}
             />
           </>
         );
@@ -141,10 +163,12 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
             <TextField
               fullWidth
               label="Discharge date"
+              type="date"
               variant="standard"
               value={dischargeDate}
               onChange={(e) => setDischargeDate(e.target.value)}
               sx={{ pb: 1 }}
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
               fullWidth
@@ -191,10 +215,12 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
         <TextField
           fullWidth
           label="Date"
+          type="date"
           variant="standard"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           sx={{ pb: 1 }}
+          InputLabelProps={{ shrink: true }}
         />
         <TextField
           fullWidth
@@ -204,16 +230,30 @@ const AddEntryForm = ({ patientId, onEntryAdded, onCancel }: Props) => {
           onChange={(e) => setSpecialist(e.target.value)}
           sx={{ pb: 1 }}
         />
+        <FormControl fullWidth sx={{ pb: 1 }}>
+          <InputLabel>Diagnosis codes</InputLabel>
+          <Select
+            multiple
+            value={diagnosisCodes}
+            onChange={handleDiagnosisChange}
+            input={<OutlinedInput label="Diagnosis codes" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((code) => (
+                  <Chip key={code} label={code} size="small" />
+                ))}
+              </Box>
+            )}
+          >
+            {diagnoses.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code} {d.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {typeSpecificFields()}
-        <TextField
-          fullWidth
-          label="Diagnosis codes"
-          variant="standard"
-          value={diagnosisCodes}
-          onChange={(e) => setDiagnosisCodes(e.target.value)}
-          sx={{ pb: 2 }}
-        />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 1 }}>
           <Button variant="contained" color="error" onClick={onCancel}>
             Cancel
           </Button>
