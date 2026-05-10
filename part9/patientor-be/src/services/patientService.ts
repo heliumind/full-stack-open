@@ -1,11 +1,20 @@
 import { v1 as uuid } from 'uuid';
 import patientsData from '../../data/patients';
-import type { NewPatient, Patient, PatientNonPII } from '../types';
-import { toNewPatient } from '../utils';
+import type { NewPatient, Patient, PatientNonPII, Entry } from '../types';
+import { toNewPatient, toNewEntry } from '../utils';
 
 const patients: Patient[] = patientsData.map((p) => {
   const patient = toNewPatient(p) as Patient;
   patient.id = p.id;
+
+  patient.entries = (p.entries ?? []).map((e) => {
+    const entry = toNewEntry(e) as Entry;
+
+    entry.id = e.id;
+
+    return entry;
+  });
+
   return patient;
 });
 
