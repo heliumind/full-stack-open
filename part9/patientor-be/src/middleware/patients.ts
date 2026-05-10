@@ -1,10 +1,19 @@
 import type { NextFunction, Request, Response } from 'express';
-import { NewPatientSchema } from '../utils';
+import { NewPatientSchema, NewEntrySchema } from '../utils';
 import { z } from 'zod';
 
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
     NewPatientSchema.parse(req.body);
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+const newEntryParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    NewEntrySchema.parse(req.body);
     next();
   } catch (error: unknown) {
     next(error);
@@ -24,4 +33,4 @@ const errorMiddleware = (
   }
 };
 
-export { newPatientParser, errorMiddleware };
+export { newPatientParser, newEntryParser, errorMiddleware };
