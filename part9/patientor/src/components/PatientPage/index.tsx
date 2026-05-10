@@ -3,17 +3,14 @@ import { useParams } from 'react-router-dom';
 import {
   Box,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
   Typography,
 } from '@mui/material';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 
-import { Patient, Diagnosis, Gender } from '../../types';
+import { Patient, Gender } from '../../types';
 import patientService from '../../services/patients';
-import diagnosisService from '../../services/diagnoses';
+import EntryDetails from './EntryDetails';
 
 const genderId = (gender: Gender) => {
   switch (gender) {
@@ -29,13 +26,11 @@ const genderId = (gender: Gender) => {
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     if (id) {
       patientService.getById(id).then(setPatient);
     }
-    diagnosisService.getAll().then(setDiagnoses);
   }, [id]);
 
   if (!patient) {
@@ -54,25 +49,7 @@ const PatientPage = () => {
 
       <Typography variant="h6" sx={{ pt: 4 }}>entries</Typography>
       {patient.entries?.map((entry) => (
-        <Box key={entry.id} sx={{ pb: 2 }}>
-          <Typography>
-            {entry.date} <em>{entry.description}</em>
-          </Typography>
-          {entry.diagnosisCodes && (
-            <List sx={{ pl: 2, listStyleType: 'disc' }}>
-              {entry.diagnosisCodes.map((code) => {
-                const diagnosis = diagnoses.find((d) => d.code === code);
-                return (
-                  <ListItem key={code} disableGutters sx={{ display: 'list-item' }}>
-                    <ListItemText
-                      primary={`${code} ${diagnosis ? diagnosis.name : ''}`}
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
-          )}
-        </Box>
+        <EntryDetails key={entry.id} entry={entry} />
       ))}
     </Box>
   );
