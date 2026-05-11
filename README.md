@@ -57,7 +57,7 @@ My solutions for the exercises of the [University of Helsinki](https://www.helsi
 | [6](./part_6/) |    Done     |   24/24   |
 | [7](./part_7/) |    Done     |   21/21   |
 | [8](./part_8/) |    Done     |   26/26   |
-| [9](./part_9/) | In Progress |   0/29    |
+| [9](./part_9/) |    Done     |   26/29   |
 
 ## Course certificates
 
